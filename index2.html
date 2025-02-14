@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Quiz</title>
+    <style>
+        body { 
+            text-align: center; 
+            font-family: Avenir, sans-serif; 
+            background-color: pink;
+            overflow: hidden;
+        }
+        #start-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+        #start-button {
+            background-color: white;
+            border: none;
+            border-radius: 50%;
+            padding: 20px 40px;
+            font-size: 20px;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+            box-shadow: 0 0 10px red;
+            transition: box-shadow 0.3s ease;
+        }
+        #start-button:hover {
+            box-shadow: 0 0 20px rgb(255, 0, 43);
+        }
+        #question-box {
+            display: none;
+            margin: auto;
+            width: 30%;
+            padding: 25px;
+            border: 5px solid red;
+            border-radius: 10px;
+            background-color: rgb(253, 253, 253);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        #poem-box {
+            display: none;
+            width: 50%;
+            height: 300px;
+            margin: auto;
+            padding: 50px;
+            text-align: center;
+            font-size: 30px;
+            font-family: Helvetica, sans-serif;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 20;
+        }
+        .heart-radio {
+            appearance: none;
+            width: 40px;
+            height: 40px;
+            background: url('heart.png') no-repeat center;
+            background-size: contain;
+            margin: 5px;
+            border: 3px solid pink;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+        }
+        .heart-radio:checked {
+            background-color: pink;
+        }
+        .fade-in-img {
+            position: absolute;
+            width: 200px; /* Larger image */
+            opacity: 0;
+            animation: fadeIn 10s infinite;
+        }
+        #submit-button {
+            background-color: white;
+            border: 5px solid transparent;
+            border-radius: 50%;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+            box-shadow: 0 0 10px red;
+            margin-top: 20px;
+        }
+        #submit-button:hover {
+            border: 5px solid rgb(233, 43, 59);
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="start-screen">
+        <h1>Valentines Exam 2025</h1>
+        <button id="start-button" onclick="startQuiz()">Start</button>
+    </div>
+    
+    <div id="question-box">
+        <p id="question"></p>
+        <div id="options"></div>
+        <button id="submit-button" onclick="checkAnswer()">Submit</button>
+    </div>
+    
+    <div id="poem-box">
+        <p id="poem"></p>
+    </div>
+    
+    <audio id="music" src="song.mp3" loop></audio>
+    
+    <script>
+        function startQuiz() {
+            document.getElementById("start-screen").style.display = "none";
+            document.getElementById("question-box").style.display = "block";
+            document.getElementById("music").play();
+            startImageFade();
+        }
+        
+        const questions = [
+            { q: "What is my favorite Color?", options: ["blue", "green", "yellow", "red"], a: "red" },
+            { q: "How many years has it been in 2025?", options: ["2", "4", "6", "10"], a: "10" },
+            { q: "What kind of animal is our son?", options: ["Cat", "Dog", "Lion", "Tiger"], a: "Cat" },
+            { q: "Which is the most rare to find?", options: ["Gold", "Diamonds", "Aliens", "A Love like ours"], a: "A Love like ours" },
+            { q: "What did we eat on our first date?", options: ["Chicken", "Sweets", "CheeseBurga", "Steak"], a: "Sweets" },
+            { q: "When is our official Anniversiary?", options: ["Feb 3rd", "Sept 3rd", "April 3rd"], a: "April 3rd" },
+            { q: "Great now what year was it?", options: ["2015", "2016", "2021", "2018"], a: "2021" },
+            { q: "Whats one of your favorite flowers?", options: ["Lily of the valley", "Sunflower", "Roses", "Orchids"], a: "Lily of the valley" },
+            { q: "Whats your favorite dish?", options: ["Steak", "Ramen", "Fried Chicken", "Hotpot"], a: "Hotpot" },
+            { q: "What is my favorite dessert?", options: ["Red Velvet", "Tiramisu", "Creme Brule", "Mochi"], a: "Tiramisu" },
+            { q: "In our book What I Love About Us, What is on Page 2?", options: ["I love how bad you're at", "I love how much we", "I love how good we are at"], a: "I love how good we are at" },
+            { q: "What is the answer on Page 2?", options: ["Talking", "Playing sports", "Eating", "Looking good together"], a: "Looking good together" },
+            { q: "Who Wrote Page 2?", options: ["You", "Me"], a: "You" },
+            { q: "Would you Kassandra Wong, be my VALENTINES?", options: ["YES", "YES", "YES", "NO"], a: "YES" }
+        ];
+        let currentQuestion = 0;
+        document.getElementById("question").innerText = questions[currentQuestion].q;
+        loadOptions();
+        
+        function loadOptions() {
+            let optionsDiv = document.getElementById("options");
+            optionsDiv.innerHTML = "";
+            questions[currentQuestion].options.forEach(option => {
+                let label = document.createElement("label");
+                label.innerHTML = `<input type='radio' name='option' value='${option}' class='heart-radio'> ${option}`;
+                optionsDiv.appendChild(label);
+            });
+        }
+        
+        function checkAnswer() {
+            let selected = document.querySelector("input[name='option']:checked");
+            if (selected && selected.value === questions[currentQuestion].a) {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    document.getElementById("question").innerText = questions[currentQuestion].q;
+                    loadOptions();
+                } else {
+                    alert("Congratulations, you have unlocked what lies in my heart");
+                    document.getElementById("question-box").style.display = "none";
+                    showPoem();
+                }
+            } else {
+                alert("Are You Sure?");
+            }
+        }
+        
+        let images = [];
+        let usedImages = [];
+        function preloadImages() {
+            for (let i = 0; i < 19; i++) {
+                let img = new Image();
+                img.src = `valentine_images/image${i}.jpg`;
+                images.push(img.src);
+            }
+        }
+        preloadImages();
+        
+        function startImageFade() {
+            setInterval(() => {
+                if (images.length === 0) {
+                    images = usedImages;
+                    usedImages = [];
+                }
+                let imgSrc = images.splice(Math.floor(Math.random() * images.length), 1)[0];
+                usedImages.push(imgSrc);
+                
+                let img = document.createElement("img");
+                img.src = imgSrc;
+                img.className = "fade-in-img";
+                // Avoiding the center (question box) and screen edges
+                const minX = 0, minY = 0;
+                const maxX = window.innerWidth - 300, maxY = window.innerHeight - 300;
+                let randomX, randomY;
+
+                // Ensure the image doesn't overlap the question box or poem box
+                do {
+                    randomX = Math.floor(Math.random() * (maxX - minX + 1)) + minX;
+                    randomY = Math.floor(Math.random() * (maxY - minY + 1)) + minY;
+                } while (
+                    (randomX >= window.innerWidth / 4 && randomX <= (3 * window.innerWidth) / 4 &&
+                    randomY >= window.innerHeight / 4 && randomY <= (3 * window.innerHeight) / 4) ||
+                    (randomX >= window.innerWidth / 4 && randomX <= (3 * window.innerWidth) / 4 &&
+                    randomY >= window.innerHeight / 2 && randomY <= (3 * window.innerHeight) / 2)
+                );
+
+                img.style.top = randomY + "px";
+                img.style.left = randomX + "px";
+                document.body.appendChild(img);
+                setTimeout(() => img.remove(), 10000);
+            }, 4500); // Less frequent
+        }
+
+        function showPoem() {
+            const poem = "Our story has been told all over the world and over again, yet only we understand." +
+                "+Who would defy Aphrodite, but my eyes knew of you Pysche," +
+                "+The world wants an bountiful harvest, but my soul yearns for you to stay Persephone," +
+                "+Mortals and gods want us apart, but my body only waits for you Alcyone," +
+                "+No glory or pride would matter to me, I fear the ocean but my love is deeper for you Amphitrite" +
+                "+Sacrifice is a currency unspent, but my loyalty is willing to give it all to return home, Penelope." +
+                "+We understand that our love is Meant 2 Bee over and over again";
+            const poemElement = document.getElementById("poem");
+            const lines = poem.split("+");
+            let index = 0;
+            poemElement.innerHTML = "";
+
+            function writeLine() {
+                if (index < lines.length) {
+                    poemElement.innerHTML += lines[index] + "<br>";
+                    index++;
+                    setTimeout(writeLine, 100); // Faster and smoother
+                }
+            }
+
+            writeLine();
+            document.getElementById("poem-box").style.display = "block";
+        }
+    </script>
+</body>
+</html>
